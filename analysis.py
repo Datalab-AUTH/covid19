@@ -309,6 +309,48 @@ def get_total_cases_per_countryEU_per_day(df):
     df1 = df.groupby(['DateRep','EU'])['NewConfCases'].sum().reset_index()
     return df1
 
+def get_first_death_date():
+    df = pickle.load(open('static/data/df.pickle','rb'))
+    countries = ['Greece','Germany','Italy','Spain','United Kingdom of Great Britain and Northern Ireland','United States of America']
+    firstdeath={}
+    for c in countries:
+        dfc = df[df['CountryExp']==c]
+        dfc = dfc.sort_values('DateRep')
+        for i,r in dfc.iterrows():
+            if r['NewDeaths']>0:
+                firstdeath[c]=r['DateRep']
+                break
+    pickle.dump(firstdeath,open('static/data/firstdeath.pickle','wb'))
+
+def get_days_deaths_after_first_death():
+    df = pickle.load(open('static/data/df.pickle','rb'))
+    countries = ['Greece','Germany','Italy','Spain','United Kingdom of Great Britain and Northern Ireland','United States of America']
+    firstdeath = pickle.load(open('static/data/firstdeath.pickle','rb'))
+    first = min(firstdeath.values())
+    adf =df[df['CountryExp'].isin(countries)]
+    adf=adf.drop(['Countries and territories', 'GeoId', 'EU',
+       'Country (region)', 'iso2', 'Ladder', 'SD of Ladder', 'Positive affect',
+       'Negative affect', 'Social support', 'Freedom', 'Corruption',
+       'Generosity', 'Log of GDP per capita', 'Healthy life expectancy', 'lat',
+       'lon', 'hf_score', 'ISO_code'], axis=1)
+    adf = adf.sort_values(by='DateRep')
+    adf = adf[adf['DateRep']>=first]
+    adf['total_deaths'] = adf.groupby(['CountryExp'])['NewDeaths'].cumsum()
+    deathdict={}
+    for d in adf['DateRep'].tolist():
+        res = adf[adf['DateRep']==d]
+        countryDeaths = []
+        countrydict ={}
+        for c in countries:
+            for i,r in res.iterrows():
+                if r['CountryExp']==c:
+                    val = r['total_deaths']
+                    countrydict[c]=round(np.log(val+1),2)
+        deathdict[str(d.date())] = countrydict
+    return deathdict
+
+
+
 # print (get_greek_data())
 # from collections import Counter
 

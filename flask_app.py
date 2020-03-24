@@ -373,5 +373,13 @@ class greek_data(Resource):
 
 api.add_resource(greek_data,'/greek_data')
 
+class deaths_since_first(Resource):
+    def get(self):
+        from analysis import get_days_deaths_after_first_death
+        mydict = get_days_deaths_after_first_death()
+        return jsonify(mydict)
+
+api.add_resource(deaths_since_first,'/deaths_since_first')
+
 if __name__=='__main__':
     app.run(host='0.0.0.0', port=5000)
