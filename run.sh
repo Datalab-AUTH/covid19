@@ -1,4 +1,5 @@
 #!/bin/sh
+
 python get_data.py
 (
 while true; do
@@ -6,5 +7,6 @@ while true; do
 	python get_data.py
 done
 ) &
-python flask_app.py
+service nginx start
+uwsgi --ini uwsgi.ini
 
