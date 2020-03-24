@@ -381,5 +381,13 @@ class deaths_since_first(Resource):
 
 api.add_resource(deaths_since_first,'/deaths_since_first')
 
+class cases_after_first_100(Resource):
+    def get(self):
+        from analysis import get_cases_after_100
+        mydict = get_cases_after_100()
+        return jsonify(mydict)
+
+api.add_resource(cases_after_first_100,'/cases_after_first_100')
+
 if __name__=='__main__':
     app.run(host='0.0.0.0', port=5000)

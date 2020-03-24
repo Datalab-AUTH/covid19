@@ -309,19 +309,6 @@ def get_total_cases_per_countryEU_per_day(df):
     df1 = df.groupby(['DateRep','EU'])['NewConfCases'].sum().reset_index()
     return df1
 
-def get_first_death_date():
-    df = pickle.load(open('static/data/df.pickle','rb'))
-    countries = ['Greece','Germany','Italy','Spain','United Kingdom of Great Britain and Northern Ireland','United States of America']
-    firstdeath={}
-    for c in countries:
-        dfc = df[df['CountryExp']==c]
-        dfc = dfc.sort_values('DateRep')
-        for i,r in dfc.iterrows():
-            if r['NewDeaths']>0:
-                firstdeath[c]=r['DateRep']
-                break
-    pickle.dump(firstdeath,open('static/data/firstdeath.pickle','wb'))
-
 def get_days_deaths_after_first_death():
     df = pickle.load(open('static/data/df.pickle','rb'))
     countries = ['Greece','Germany','Italy','Spain','United Kingdom of Great Britain and Northern Ireland','United States of America']
@@ -336,9 +323,16 @@ def get_days_deaths_after_first_death():
     adf = adf.sort_values(by='DateRep')
     adf = adf[adf['DateRep']>=first]
     adf['total_deaths'] = adf.groupby(['CountryExp'])['NewDeaths'].cumsum()
+    dates = sorted(list(set(adf['DateRep'].tolist())))
+    datedict={}
+    i=0
+    for d in dates:
+        datedict[d]=i
+        i+=1
+    adf['Days']=adf['DateRep'].map(datedict)
     deathdict={}
-    for d in adf['DateRep'].tolist():
-        res = adf[adf['DateRep']==d]
+    for d in adf['Days'].tolist():
+        res = adf[adf['Days']==d]
         countryDeaths = []
         countrydict ={}
         for c in countries:
@@ -346,25 +340,42 @@ def get_days_deaths_after_first_death():
                 if r['CountryExp']==c:
                     val = r['total_deaths']
                     countrydict[c]=round(np.log(val+1),2)
-        deathdict[str(d.date())] = countrydict
+        deathdict[str(d)] = countrydict
     return deathdict
 
-
-
-# print (get_greek_data())
-# from collections import Counter
-
-# df =df.dropna()
-# print (set(df['CountryExp']))
-# print (get_total_distribution_of_deaths(df))
-# # print (len(set(sorted(df['CountryExp'].tolist()))))
-# print (Counter(df['CountryExp'].tolist()))
-# print (get_countries_per_capita(df))
-# print (get_todays_cases_EU(df))
-# # print (type(get_todays_cases_EU(df)))
-# print (get_todays_cases_nonEU(df))
-# # print (type(get_todays_cases_nonEU(df)))
-# df1 = get_total_cases_per_country_hf(df)
-# # print (df1)
-# print (df1[df1['CountryExp']=='Greece'])
-
+def get_cases_after_100():
+    df = pickle.load(open('static/data/df.pickle','rb'))
+    countries = ['Greece','Germany','Italy','Spain','United Kingdom of Great Britain and Northern Ireland','United States of America']
+    adf =df[df['CountryExp'].isin(countries)]
+    adf=adf.drop(['Countries and territories', 'GeoId', 'EU',
+       'Country (region)', 'iso2', 'Ladder', 'SD of Ladder', 'Positive affect',
+       'Negative affect', 'Social support', 'Freedom', 'Corruption',
+       'Generosity', 'Log of GDP per capita', 'Healthy life expectancy', 'lat',
+       'lon', 'hf_score', 'ISO_code'], axis=1)
+    adf = adf.sort_values(by='DateRep')
+    adf['total_cases'] = adf.groupby(['CountryExp'])['NewConfCases'].cumsum()
+    adf = adf.sort_values(by='DateRep')
+    for i,r in adf.iterrows():
+            if r['total_cases']>100:
+                first=r['DateRep']
+                break
+    adf = adf[adf['DateRep']>=first]
+    dates = sorted(list(set(adf['DateRep'].tolist())))
+    datedict={}
+    i=0
+    for d in dates:
+        datedict[d]=i
+        i+=1
+    adf['Days']=adf['DateRep'].map(datedict)
+    casedict={}
+    for d in adf['Days'].tolist():
+        res = adf[adf['Days']==d]
+        countryDeaths = []
+        countrydict ={}
+        for c in countries:
+            for i,r in res.iterrows():
+                if r['CountryExp']==c:
+                    val = r['total_cases']
+                    countrydict[c]=round(np.log(val+1),2)
+        casedict[str(d)] = countrydict
+    return casedict
