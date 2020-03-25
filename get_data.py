@@ -5,6 +5,7 @@ from datetime import datetime, timedelta, time
 import datetime as dt
 import pandas as pd
 import pickle
+import sys
 
 def get_ecdc_data():
     datetimeToday = datetime.today()
@@ -12,30 +13,26 @@ def get_ecdc_data():
     time = datetimeToday.time() #ώρα τώρα
     yesterday = date - timedelta(1) #μέρα ώρα χθες
     yesterday = str(yesterday) #μέρα χθες
-    timeFilter = dt.time(10, 00, 00) #ώρα που ανεβάζουν τα data
-    print (timeFilter)
     filename = 'static/data/ecdcdata'
-    if time<timeFilter:
-        print ("...getting yesterday's results...")
-        try:
-            url = 'https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide-'+yesterday+'.xls'
-            urllib.request.urlretrieve(url, filename)
-            print ('downloaded yesterdays xls')
-        except:
-            url = 'https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide-'+yesterday+'.xlsx'
-            urllib.request.urlretrieve(url, filename)
-            print ('downloaded yesterdays xlsx')
-    else:
-        print ("...getting today's results...")
+    try:
+        url = 'https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide-'+str(date)+'.xlsx'
+        urllib.request.urlretrieve(url, filename)
+    except:
         try:
             url = 'https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide-'+str(date)+'.xls'
             urllib.request.urlretrieve(url, filename)
         except:
             try:
-                url = 'https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide-'+str(date)+'.xlsx'
+                url = 'https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide-'+yesterday+'.xlsx'
                 urllib.request.urlretrieve(url, filename)
             except:
-                print ('no data yet')
+                try:
+                    url = 'https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide-'+yesterday+'.xls'
+                    urllib.request.urlretrieve(url, filename)
+                except:
+                    print('no data to download! ???')
+                    sys.exit(1)
+    print('received data from ', url)
 
 def map_countries():
     mapping = pickle.load(open('static/data/mapping','rb'))
