@@ -6,8 +6,6 @@ RUN pip install -r requirements.txt && \
 		apt-get install -y nginx && \
 		apt-get clean && \
 		chown -R www-data:www-data static && \
-		mv /nginx.conf /etc/nginx/nginx.conf && \
-		sed -i "s|const host = .*|const host = 'http://covid19.vlahavas.com'|" /static/js/bind-variables.js && \
-		sed -i "s|const host = .*|const host = 'http://covid19.vlahavas.com'|" /static/js/morris/morris-plain.js
+		mv /nginx.conf /etc/nginx/nginx.conf
 CMD [ "./run.sh" ]
 
