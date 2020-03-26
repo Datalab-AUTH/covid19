@@ -10,10 +10,9 @@ import sys
 
 def get_ecdc_data():
     datetimeToday = datetime.today()
-    date = datetimeToday.date()  # μέρα τώρα
-    time = datetimeToday.time()  # ώρα τώρα
-    yesterday = date - timedelta(1)  # μέρα ώρα χθες
-    yesterday = str(yesterday)  # μέρα χθες
+    date = datetimeToday.date()  # date now
+    time = datetimeToday.time()  # time now
+    yesterday = str(date - timedelta(1))  # yesterday
     filename = 'static/data/ecdcdata'
     try:
         url = 'https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide-' + str(
