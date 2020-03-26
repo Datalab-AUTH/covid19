@@ -52,6 +52,7 @@ def get_oxford_government_action_data():
         print('Problem retrieving data from Oxford University: ' + str(e))
 
 
+
 def map_countries():
     mapping = pickle.load(open('static/data/mapping', 'rb'))
     countries = []
@@ -111,4 +112,4 @@ def merge_data():
 
 if __name__ == "__main__":
     get_oxford_government_action_data()
-    # merge_data()
+    merge_data()
