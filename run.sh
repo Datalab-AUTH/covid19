@@ -9,7 +9,7 @@ else
 	echo "SITE_URL has been set to: $SITE_URL"
 fi
 sed -i \
-	"s|const host = .*|const host = '$SITE_URL'|" \
+	"s|const host = .*|const host = '$SITE_URL';|" \
 	/static/js/bind-variables.js \
 	/static/js/morris/morris-plain.js
 python get_data.py
