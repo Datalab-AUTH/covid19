@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEFAULT_SITE_URL="http://covid19.vlahavas.com"
+DEFAULT_SITE_URL="http://covid19.csd.auth.gr"
 
 if [[ -z $SITE_URL ]]; then
 	echo "Using default SITE_URL: $DEFAULT_SITE_URL"
