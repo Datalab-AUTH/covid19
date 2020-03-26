@@ -7,20 +7,10 @@ function getResultFromEndpoint(endpoint, callback) {
             dataType: 'json',
             success: callback,
             error: function (x, e) {
-                console.log('server error occoured');
-                if (x.status == 0) {
-                    console.log('0 error');
-                } else if (x.status == 404) {
-                    console.log('404 error');
-                } else if (x.status == 500) {
-                    console.log('500 error');
-                } else if (e == 'parsererror') {
-                    console.log('Error.nParsing JSON Request failed.');
-                } else if (e == 'timeout') {
-                    console.log('Time out.');
-                } else {
-                    console.log(x.responseText);
-                }
+                console.log('ERROR. endpoint: ' + endpoint 
+                        + ', status: ' + x.status 
+                        + ', response: ' + x.responsetext
+                        + ', error: ' + e)
             }
         }
     );
