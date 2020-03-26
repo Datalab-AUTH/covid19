@@ -108,6 +108,11 @@ def merge_data():
     df_final = pd.merge(df, human_freedom, on="CountryExp", how='left')
     pickle.dump(df_final, open('static/data/df.pickle', 'wb'))
 
+    df1 = df.groupby('CountryExp')['NewConfCases'].sum().reset_index()
+    df2 = df.groupby('CountryExp')['NewDeaths'].sum().reset_index()
+    final_df = pd.merge(df1, df2, on='CountryExp')
+    final_df.to_csv('static/data/table-data.csv', index=False)
+
 
 if __name__ == "__main__":
     get_oxford_government_action_data()

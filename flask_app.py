@@ -21,10 +21,6 @@ CORS(app)
 def home():
     global df
     df = pickle.load(open('static/data/df.pickle', 'rb'))
-    df1 = df.groupby('CountryExp')['NewConfCases'].sum().reset_index()
-    df2 = df.groupby('CountryExp')['NewDeaths'].sum().reset_index()
-    final_df = pd.merge(df1, df2, on='CountryExp')
-    final_df.to_csv('static/data/table-data.csv', index=False)
     return render_template('index.html')
 
 
