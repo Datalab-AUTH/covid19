@@ -245,6 +245,11 @@
 }
 .fa-home:before {
   content: "\f015";
+  color:white;
+}
+
+.fa-home:before:hover{
+  color:black;
 }
 .fa-file-o:before {
   content: "\f016";
@@ -285,6 +290,7 @@
 }
 .fa-flag:before {
   content: "\f024";
+  color:white;
 }
 .fa-headphones:before {
   content: "\f025";
@@ -553,7 +559,15 @@
 .fa-bar-chart-o:before,
 .fa-bar-chart:before {
   content: "\f080";
+  color:white
 }
+
+.fa-bar-chart-o:before,
+.fa-bar-chart:before {
+  content: "\f080";
+  color:white
+}
+
 .fa-twitter-square:before {
   content: "\f081";
 }
@@ -770,6 +784,7 @@
 }
 .fa-money:before {
   content: "\f0d6";
+  color:white
 }
 .fa-caret-down:before {
   content: "\f0d7";
@@ -877,6 +892,7 @@
 }
 .fa-ambulance:before {
   content: "\f0f9";
+  color:white;
 }
 .fa-medkit:before {
   content: "\f0fa";
@@ -975,6 +991,7 @@
 }
 .fa-flag-o:before {
   content: "\f11d";
+  color:white
 }
 .fa-flag-checkered:before {
   content: "\f11e";
@@ -1657,6 +1674,7 @@
 }
 .fa-line-chart:before {
   content: "\f201";
+  color: white;
 }
 .fa-lastfm:before {
   content: "\f202";
@@ -1743,6 +1761,7 @@
 }
 .fa-heartbeat:before {
   content: "\f21e";
+  color:white;
 }
 .fa-venus:before {
   content: "\f221";
@@ -2012,6 +2031,7 @@
 }
 .fa-commenting-o:before {
   content: "\f27b";
+  color:white
 }
 .fa-houzz:before {
   content: "\f27c";

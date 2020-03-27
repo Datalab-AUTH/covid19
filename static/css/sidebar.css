@@ -3,7 +3,7 @@
 ----------------------------------------------------- */
 
 #sidebar {
-    width: 250px;
+    width: 270px;
     position: fixed;
     top: 0;
     left: -250px;
@@ -14,10 +14,12 @@
     transition: all 0.3s;
     overflow-y: scroll;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+    margin-top: 53px;
 }
 
-#sidebar.active {
+#sidebar {
     left: 0;
+    overflow:hidden;
 }
 
 #dismiss {
@@ -40,24 +42,23 @@
     color: #1F2739;
 }
 
-.overlay {
-    display: none;
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 20;
-    opacity: 0;
-    transition: all 0.5s ease-in-out;
-}
-.overlay.active {
-    display: block;
-    opacity: 1;
-}
+/*.overlay {*/
+/*    display: none;*/
+/*    position: fixed;*/
+/*    width: 100vw;*/
+/*    height: 100vh;*/
+/*    background: rgba(0, 0, 0, 0.7);*/
+/*    z-index: 20;*/
+/*    opacity: 0;*/
+/*    transition: all 0.5s ease-in-out;*/
+/*}*/
+/*.overlay {*/
+/*    display: block;*/
+/*    opacity: 1;*/
+/*}*/
 
 #sidebar ul.components {
     padding: 20px 0;
-    border-bottom: 1px solid #47748b;
 }
 
 #sidebar ul p {
@@ -71,15 +72,125 @@
     display: block;
 }
 
-#sidebar ul li a:hover {
-    color: #1F2739;
-    background: #fff;
+
+#sidebar ul li a span{
+    color:white;
 }
 
-#sidebar ul li.active>a,
+
+
+
+
+#sidebar ul li>a,
 a[aria-expanded="true"] {
     color: #fff;
-    background: #1F2739;
+}
+
+
+.arrow::after{
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #13a4a8;
+    clear: both;
+    right: 25%;
+    color: #13a4a8;
+    margin-top: 6.5px;
+}
+
+.arrow2::after{
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #13a4a8;
+    clear: both;
+    right: 12%;
+    color: #13a4a8;
+    margin-top: 6.5px;
+}
+.arrow3::after{
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #13a4a8;
+    clear: both;
+    right: 35%;
+    color: #13a4a8;
+    margin-top: 6.5px;
+}
+.arrow4::after{
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #13a4a8;
+    clear: both;
+    right: 5%;
+    color: #13a4a8;
+    margin-top: 6.5px;
+}
+.arrow5::after{
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #13a4a8;
+    clear: both;
+    right: 32%;
+    color: #13a4a8;
+    margin-top: 6.5px;
+}
+.arrow6::after{
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #13a4a8;
+    clear: both;
+    right: 33%;
+    color: #13a4a8;
+    margin-top: 6.5px;
+}
+.arrow7::after{
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #13a4a8;
+    clear: both;
+    right: 46%;
+    color: #13a4a8;
+    margin-top: 6.5px;
+}
+.arrow8::after{
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #13a4a8;
+    clear: both;
+    right: 53%;
+    color: #13a4a8;
+    margin-top: 6.5px;
 }
 
 

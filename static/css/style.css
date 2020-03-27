@@ -18,6 +18,7 @@ body {
     background-color: #1F2739;
     padding: 0px !important;
     margin: 0px !important;
+    overflow-x: hidden;
 }
 
 h2, h4{
@@ -84,6 +85,14 @@ p {
     color: #ecf0f4;
 }
 
+#title{
+    color:#0bc3bb;
+    margin-left:40px;
+    font-weight: bold;
+    position: absolute;
+    left: 3%;
+}
+
 /*LOGO*/
 .logo {
     font-size: 20px;
@@ -109,6 +118,13 @@ p {
     text-align: justify;
 }
 
+#trapezoid {
+      border-bottom: 100px solid red;
+      border-left: 25px solid transparent;
+      border-right: 25px solid transparent;
+      height: 0;
+      width: 100px;
+    }
 
 .intro-cases{
     font-size: 20px;
@@ -165,7 +181,12 @@ circle {
     top: 0;
     left: 0;
     z-index: 10;
-    width:100%
+    width:100%;
+    padding:0.1rem;
+}
+
+#first-part{
+    margin-left: -20px;
 }
 
 #logo-img{

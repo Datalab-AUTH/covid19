@@ -11,12 +11,12 @@
     background-color: #1F2739;
 }
 
-#info-table h1 {
+#info-table span {
     font-weight: bold;
-    font-size: 1.5em;
     line-height: 1.5em;
     text-align: center;
-    color: #4DC3FA;
+    color: white;
+    font-size: 1.2em;
 }
 
 .blue {
@@ -58,37 +58,42 @@
 }
 
 .table-container th {
-    background-color: #1F2739;
+    background-color: #090a0c;
+    border-right:solid 1px white;
 }
 
 .table-container td:first-child {
     font-weight: bold;
 }
 
+.thread .tr .border{
+    border-right:solid 1px white;
+}
+
 .table-container td:nth-child(3) {
-    color: #FB667A;
+    color: #71bacb;
 }
 
-.table-container tr:hover {
-    background-color: #464A52;
-    -webkit-box-shadow: 0 6px 6px -6px #0E1119;
-    -moz-box-shadow: 0 6px 6px -6px #0E1119;
-    box-shadow: 0 6px 6px -6px #0E1119;
-}
+/*.table-container tr:hover {*/
+/*    background-color: #464A52;*/
+/*    -webkit-box-shadow: 0 6px 6px -6px #0E1119;*/
+/*    -moz-box-shadow: 0 6px 6px -6px #0E1119;*/
+/*    box-shadow: 0 6px 6px -6px #0E1119;*/
+/*}*/
 
-.table-container td:hover {
-    background-color: #FFF842;
-    color: #403E10;
-    font-weight: bold;
+/*.table-container td:hover {*/
+/*    background-color: #FFF842;*/
+/*    color: #403E10;*/
+/*    font-weight: bold;*/
 
-    box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;
-    transform: translate3d(6px, -6px, 0);
+/*    box-shadow: #7F7C21 -1px 1px, #7F7C21 2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;*/
+/*    transform: translate3d(6px, -6px, 0);*/
 
-    transition-delay: 0s;
-    transition-duration: 0.4s;
-    transition-property: all;
-    transition-timing-function: linear;
-}
+/*    transition-delay: 0s;*/
+/*    transition-duration: 0.4s;*/
+/*    transition-property: all;*/
+/*    transition-timing-function: linear;*/
+/*}*/
 
 /* width */
 ::-webkit-scrollbar {
@@ -115,7 +120,7 @@
 /*SCROLLABLE*/
 
 .scroll-it {
-    direction: rtl;
+    direction: ltr;
     overflow: auto;
     height: 500px;
 }
