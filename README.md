@@ -26,6 +26,7 @@ Web app for visualizing covid data
         - % population males
         - % population females
         - Current health expenditure (% of GDP)
+        - GDP per capita (current US$)
     - OECD (Latest data) oecd_data.csv [DONE]
         - Hospital Beds
         - Doctors per 1000 habitats
