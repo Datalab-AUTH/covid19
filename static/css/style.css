@@ -90,6 +90,15 @@ p {
     color: #ffffff;
     margin-top: 15px;
     text-transform: uppercase;
+
+}
+
+#virus {
+    font-weight: bold;
+}
+
+#panel{
+    text-transform: lowercase;
 }
 /*END LOGO*/
 
@@ -106,6 +115,7 @@ p {
     padding-top: 20px;
     padding-left: 60px;
 }
+
 
 /*END INTRO*/
 
@@ -152,12 +162,18 @@ circle {
     border-radius: 0;
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
     position: fixed;
-    height:80px;
     top: 0;
     left: 0;
     z-index: 10;
+    width:100%
 }
 
+#logo-img{
+    height: 30px;
+    width: 30px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
 .bg-dark {
     background-color: #1F2739 !important;
 }

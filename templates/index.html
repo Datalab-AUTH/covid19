@@ -123,17 +123,9 @@
             <div class="row">
                 <nav class="navbar navbar-expand-lg navbar-dark bg-darker">
                     <div class="container-fluid">
-                        <div class="col-2">
-                            <button type="button" id="sidebarCollapse" class="btn btn-primary">
-                                <i class="fa fa-align-left"></i>
-                                <span>Μενού</span>
-                            </button>
-                            <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                                <i class="fas fa-align-justify"></i>
-                            </button>
-                        </div>
                         <div class="col-6">
-                            <a href="/" class="logo"><img src="static/img/icon.png" alt="COVID-19" id="icon"> COVID-19 Ενημερωση</a>
+                            <img id="logo-img" src="static/img/DataLab_Logo_Transparent.png">
+                            <a href="/" class="logo"><span id="virus">COVID-19</span> | <span id="panel">data exposure panel</span></a>
                         </div>
                         <div class="col-4">
                             <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -162,6 +154,15 @@
             </div>
 
             <div class="row below-header">
+                <div class="col-2">
+                            <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                                <i class="fa fa-align-left"></i>
+                                <span>Μενού</span>
+                            </button>
+                            <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <i class="fas fa-align-justify"></i>
+                            </button>
+                        </div>
                 <div class="col">
                     <div class="row">
                         <h2>Ο COVID-19 ΣΗΜΕΡΑ </h2>
@@ -242,7 +243,7 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-3" style="margin-right:auto">
+                                    <div class="col-12-6" style="margin-right:auto">
                                         <div class="card bg-primary align-items-center" style="height: 150px;">
                                             <div class="card-header">Κρούσματα (ΕΕ) <img
                                                     src="static/img/eu-white.png"
@@ -253,7 +254,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-3" style="margin-right:auto">
+                                    <div class="col-12-6" style="margin-right:auto">
                                         <div class="card bg-danger align-items-center" style="height: 150px;">
                                             <div class="card-header">Θάνατοι (ΕΕ) <img src="static/img/eu.png"
                                                                                        style="width:18px; height:18px;"/>
@@ -263,7 +264,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-3-5">
+                                    <div class="col-12-6">
                                         <div class="card bg-primary align-items-center" style="height: 150px;">
                                             <div class="card-header">Κρούσματα (εκτός ΕΕ)</div>
                                             <div class="card-body">
@@ -271,7 +272,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-3" style="margin-left:auto">
+                                    <div class="col-12-6" style="margin-left:auto">
                                         <div class="card bg-danger align-items-center" style="height: 150px;">
                                             <div class="card-header">Θάνατοι (εκτός ΕΕ)</div>
                                             <div class="card-body">

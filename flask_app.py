@@ -6,6 +6,7 @@ from flask_cors import CORS
 import pickle
 
 
+
 # df = analysis.merge_data()
 
 app = Flask(__name__, template_folder='templates')
@@ -386,4 +387,4 @@ class cases_after_first_100(Resource):
 api.add_resource(cases_after_first_100,'/cases_after_first_100')
 
 if __name__=='__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
