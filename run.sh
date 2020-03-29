@@ -10,8 +10,8 @@ else
 fi
 sed -i \
 	"s|const host = .*|const host = '$SITE_URL';|" \
-	/static/js/bind-variables.js \
-	/static/js/morris/morris-plain.js
+	static/js/bind-variables.js \
+	static/js/morris/morris-plain.js
 python get_data.py
 (
 while true; do
