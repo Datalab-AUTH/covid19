@@ -18,6 +18,7 @@
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width: 20px;
 }
 /* makes the font 33% larger relative to the icon container */
 .fa-lg {
@@ -244,7 +245,7 @@
   content: "\f014";
 }
 .fa-home:before {
-  content: "\f015";
+
   color:white;
 }
 
@@ -558,13 +559,11 @@
 }
 .fa-bar-chart-o:before,
 .fa-bar-chart:before {
-  content: "\f080";
   color:white
 }
 
 .fa-bar-chart-o:before,
 .fa-bar-chart:before {
-  content: "\f080";
   color:white
 }
 
@@ -783,7 +782,6 @@
   content: "\f0d5";
 }
 .fa-money:before {
-  content: "\f0d6";
   color:white
 }
 .fa-caret-down:before {
@@ -891,7 +889,6 @@
   content: "\f0f8";
 }
 .fa-ambulance:before {
-  content: "\f0f9";
   color:white;
 }
 .fa-medkit:before {
@@ -990,7 +987,6 @@
   content: "\f11c";
 }
 .fa-flag-o:before {
-  content: "\f11d";
   color:white
 }
 .fa-flag-checkered:before {
@@ -1673,7 +1669,6 @@
   content: "\f200";
 }
 .fa-line-chart:before {
-  content: "\f201";
   color: white;
 }
 .fa-lastfm:before {
@@ -1760,7 +1755,6 @@
   content: "\f21d";
 }
 .fa-heartbeat:before {
-  content: "\f21e";
   color:white;
 }
 .fa-venus:before {

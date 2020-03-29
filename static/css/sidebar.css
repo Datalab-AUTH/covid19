@@ -3,7 +3,7 @@
 ----------------------------------------------------- */
 
 #sidebar {
-    width: 270px;
+    width: 250px;
     position: fixed;
     top: 0;
     left: -250px;
@@ -17,10 +17,13 @@
     margin-top: 53px;
 }
 
-#sidebar {
+#sidebar.active {
     left: 0;
     overflow:hidden;
+    width: 270px; !important;
 }
+
+
 
 #dismiss {
     width: 35px;
@@ -42,20 +45,19 @@
     color: #1F2739;
 }
 
-/*.overlay {*/
-/*    display: none;*/
-/*    position: fixed;*/
-/*    width: 100vw;*/
-/*    height: 100vh;*/
-/*    background: rgba(0, 0, 0, 0.7);*/
-/*    z-index: 20;*/
-/*    opacity: 0;*/
-/*    transition: all 0.5s ease-in-out;*/
-/*}*/
-/*.overlay {*/
-/*    display: block;*/
-/*    opacity: 1;*/
-/*}*/
+.overlay {
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 20;
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
+}
+.overlay.active {
+    display: block;
+}
 
 #sidebar ul.components {
     padding: 20px 0;
@@ -201,7 +203,11 @@ ul ul a {
 }
 
 #sidebarCollapse {
-    background: #4DC3FA;
+    background: #0bc3bb;
+    position: fixed;
+    z-index: 10;
+    top: 10%;
+    left: 10px;
 }
 
 #sidebarCollapse:hover, #sidebarCollapse:active {

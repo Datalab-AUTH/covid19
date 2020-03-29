@@ -102,6 +102,10 @@ p {
 
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 #virus {
     font-weight: bold;
 }
