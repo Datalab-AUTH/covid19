@@ -17,6 +17,14 @@
     margin-top: 53px;
 }
 
+#overview{
+    padding: 20px;
+    margin-left: 20px;
+    margin-right: 10px;
+    background: #187076;
+    border-radius: 25px;
+}
+
 #sidebar.active {
     left: 0;
     overflow:hidden;
@@ -102,6 +110,7 @@ a[aria-expanded="true"] {
     color: #13a4a8;
     margin-top: 6.5px;
 }
+
 
 .arrow2::after{
     content: '';

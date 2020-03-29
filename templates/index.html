@@ -51,10 +51,17 @@
             <li class="active">
                 <a id="scroll" href="#panel">
                     <img src="/static/img/panel-world-icon.png" class="fa fa-home">
-                    <span class="arrow" style="font-weight: bold;font-size: 17px;">Worldwide Spread</span>
+                    <span class="arrow" onclick="myFunction()">Worldwide Spread</span>
                 </a>
+                <div id="overview" style="display: none;">
+                    <span style="display: block;font-weight: bold;font-size: 17px;">Overview</span>
+                    <span style="display: block;margin-top: 20px;">Confirmed Cases: <span style="font-weight: bold;" id="total-cases"></span></span>
+                    <span style="display: block">Deceased: <span style="font-weight: bold" id="total-deaths"></span></span>
+                    <span style="display: block">Recovered:</span>
+                    <span style="display: block">Infected countries:</span>
+                </div>
             </li>
-            <li>
+            <li style="margin-top:15px;">
                 <a id="scroll" href="#row1">
                     <img src="/static/img/panel-cases-icon.png" class="fa fa-ambulance">
                     <span class="arrow2" style="font-weight: bold;font-size: 17px;">Daily Confirmed Cases</span>
@@ -171,7 +178,7 @@
 
                 <div class="row">
                     <div class="col-9">
-                        <!-- PANEL GRID -->
+{#                        <!-- PANEL GRID -->#}
 {#                        <div class="row case-charts" id="panel2">#}
 {#                            <div class="col">#}
 {##}
