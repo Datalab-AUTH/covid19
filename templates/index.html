@@ -121,7 +121,8 @@
 {#                </a>#}
 {#            </li>#}
         </ul>
-        <div class="row">
+        <div style="margin-top:130px">
+            <div class="row" style="margin-bottom: 0 !important;">
             <div class="col-6" style="background: #0a0b10">
                <a href="https://datalab.csd.auth.gr/" target="_blank"><img src="/static/img/DataLab_Logo_Transparent%20(2).png" style="margin-top: 20px;"></a>
             </div>
@@ -129,8 +130,17 @@
                 <a href="https://www.auth.gr/en" target="_blank"><img src="/static/img/auth-horizontal-black-en.png" style="width:120px;"></a>
                 <a href="http://www.csd.auth.gr/" target="_blank"><img src="/static/img/csd_logo_eng%20(2).png" style="width:110px;"></a>
             </div>
-
         </div>
+        <div class="row">
+                <footer class="site-footer">
+                    <div class="text-center" style="font-size: 15px;">
+                            © 2020 <a href="https://datalab.csd.auth.gr/" target="_blank">DATALAB</a>, ο κώδικας μπορεί να βρεθεί <a
+                             href="https://github.com/idimitriadis/covid" target="_blank">εδώ</a>
+                    </div>
+                </footer>
+            </div>
+        </div>
+
     </nav>
 
     <div id="content" style="background:#444b55">
@@ -178,6 +188,17 @@
 
                 <div class="row">
                     <div class="col-9">
+                        <div class="row case-charts" id="row7">
+                    <div class="col">
+                        <h4>Χάρτης κρουσμάτων <i class="fa fa-info-circle infopop-icon"></i></h4>
+                        <div class="infopop">
+                            <p>Ο παρακάτω χάρτης παρουσιάζει γραφικά πληροφορίες σχετικά με κρούσματα και θανάτους για κάθε χώρα.
+                            Πατώντας σε κάποιο από τα εικονίδια ιού φαίνεται η πληροφορία για τη συγκεκριμένη χώρα.</p>
+                        </div>
+                        <div class="map" id="map" style="height: 610px; width:100%"></div>
+                    </div>
+                    <!-- <div class="col-lg-6 col-md-6 col-sm-6"><div class="map" id="mapGR"></div></div> -->
+                </div>
 {#                        <!-- PANEL GRID -->#}
 {#                        <div class="row case-charts" id="panel2">#}
 {#                            <div class="col">#}
@@ -371,6 +392,7 @@
                 <!-- 1st PLOT -->
                 <div class="row case-charts" id="row1">
                     <div class="col">
+
                         <div class="row">
                             <h4>Κρούσματα ανά ημέρα. Σύγκριση κόσμου με Ελλάδα <i class="fa fa-info-circle infopop-icon"></i></h4>
                             <div class="infopop">
@@ -572,25 +594,6 @@
                     </div>
                 </div>
                 <!--    CASES MAP -->
-                <div class="row case-charts" id="row7">
-                    <div class="col">
-                        <h4>Χάρτης κρουσμάτων <i class="fa fa-info-circle infopop-icon"></i></h4>
-                        <div class="infopop">
-                            <p>Ο παρακάτω χάρτης παρουσιάζει γραφικά πληροφορίες σχετικά με κρούσματα και θανάτους για κάθε χώρα.
-                            Πατώντας σε κάποιο από τα εικονίδια ιού φαίνεται η πληροφορία για τη συγκεκριμένη χώρα.</p>
-                        </div>
-                        <div class="map" id="map" style="height: 610px; width:100%"></div>
-                    </div>
-                    <!-- <div class="col-lg-6 col-md-6 col-sm-6"><div class="map" id="mapGR"></div></div> -->
-                </div>
-            </div>
-            <div class="row">
-                <footer class="site-footer">
-                    <div class="text-center">
-                            © 2020 <a href="https://datalab.csd.auth.gr/" target="_blank">DATALAB</a>, ο κώδικας μπορεί να βρεθεί <a
-                             href="https://github.com/idimitriadis/covid" target="_blank">εδώ</a>
-                    </div>
-                </footer>
             </div>
         </div>
     </div>
@@ -612,6 +615,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+
 
 
 <!--script for this page-->
