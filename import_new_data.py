@@ -1,7 +1,15 @@
 import pandas as pd
 
+def get_new_format():
+    ecdc = pd.read_excel('data/ecdcdata.xlsx')
+    # print (ecdc.columns)
+    ecdc = ecdc.rename(columns={'dateRep':'DateRep','day':'Day', 'month':'Month', 'year':'Year', 'cases':'Cases', 'deaths':'Deaths',
+       'countriesAndTerritories':'Countries and territories', 'geoId':'GeoId','popData2018':'Pop_Data.2018'})
+    # print (ecdc.columns)
+    ecdc.to_csv('data/ecdcdata.csv',index=False)
+
 def preprocess_codes():
-    ecdc = pd.read_csv('ecdcdata.csv')
+    ecdc = pd.read_csv('data/ecdcdata.csv')
     codes = pd.read_csv('data/newcodes.csv')
     df = ecdc.groupby(['Countries and territories','GeoId'])['Cases'].sum().reset_index()
     countryDict = {}
@@ -61,6 +69,7 @@ def merge_countries_borders_ecdc():
     return df_final #THIS DATAFRAME CONTAINS INFORMATION FOR BORDER COUNTRIES AND CASES-DEATHS-POPULATION OF EACH COUNTRY
 
 def read_data():
+    get_new_format()
     iso2,iso3 = get_iso_2_3_codes()
     ecdc = pd.read_csv('data/ecdcdata.csv')
     ecdc=ecdc.drop(['Day','Month','Year'],axis=1)
@@ -76,10 +85,8 @@ def read_data():
     ecdc_hfr = pd.merge(ecdc,hfr,on='Countries and territories',how='left') #THIS DATAFRAME CONTAINS ECDC DATA AND THE HUMAN FREEDOM INDICES
     ecdc_bank = pd.merge(ecdc,bank,on='Countries and territories',how='left') #THIS DATAFRAME CONTAINS ECDC DATA MERGED WITH THE WORLD DATA BANK DATA
     ecdc_oecd = pd.merge(ecdc,oecd,on='Countries and territories',how='left') #THIS DATAFRAME CONTAINS ECDC DATA MERGED WITH THE OECD DATA
-    return ecdc_loc,ecdc_whr,ecdc_hfr,ecdc_bank,ecdc_oecd
+    return ecdc_loc,ecdc_whr,ecdc_hfr,ecdc_bank,ecdc_oecd,ecdc,oecd,hfr,bank,whr,codes
 
 
-ecdc = pd.read_excel('data/ecdcdata.xlsx')
-ecdc.to_csv('data/ecdcdata.csv',index=False)
 ecdc_borders = merge_countries_borders_ecdc()
-ecdc_loc,ecdc_whr,ecdc_hfr,ecdc_bank,ecdc_oecd = read_data()
+ecdc_loc,ecdc_whr,ecdc_hfr,ecdc_bank,ecdc_oecd,ecdc,oecd,hfr,bank,whr,codes = read_data()
