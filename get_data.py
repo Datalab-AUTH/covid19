@@ -76,7 +76,9 @@ def merge_data():
     oldData = pd.read_excel('static/data/oldData.xls')
     eudict = dict(zip(oldData.GeoId, oldData.EU))
     get_ecdc_data()
-    covid = pd.read_excel('static/data/ecdcdata', converters={'GeoId': str})
+    covid = pd.read_excel('static/data/ecdcdata', converters={'geoId': str})
+    covid = covid.rename(columns={'dateRep':'DateRep','day':'Day', 'month':'Month', 'year':'Year', 'cases':'NewConfCases', 'deaths':'NewDeaths',
+       'countriesAndTerritories':'CountryExp', 'geoId':'GeoId','popData2018':'Pop_Data.2018'})
     countryExp = list()
     for i, r in covid.iterrows():
         try:
@@ -90,7 +92,6 @@ def merge_data():
         except TypeError:
             countryExp.append('Namibia')
     covid['CountryExp'] = countryExp
-    covid = covid.rename(columns={"Cases": "NewConfCases", "Deaths": "NewDeaths"})
     covid['EU'] = covid['GeoId'].map(eudict)
 
     whr2019 = pd.read_csv('static/data/world-happiness-report-2019.csv')
