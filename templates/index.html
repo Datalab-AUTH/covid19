@@ -44,10 +44,17 @@
 <body>
 <div class="wrapper">
     <nav id="sidebar" style="background: #2c363f">
+
         <div id="dismiss">
             <i class="fa fa-arrow-left"></i>
         </div>
-        <ul class="list-unstyled components">
+        <ul class="nav nav-tabs" style="font-size: 12px">
+            <li class="active"><a id="text" href="#first-tab">Stats</a></li>
+            <li><a id="text" href="#">Models</a></li>
+            <li><a id="text" href="#">Social</a></li>
+            <li><a id="text" href="#">About</a></li>
+        </ul>
+        <ul class="list-unstyled components" id="first-tab">
             <li class="active">
                 <a id="scroll" href="#panel">
                     <img src="/static/img/panel-world-icon.png" class="fa fa-home">
@@ -121,7 +128,7 @@
 {#                </a>#}
 {#            </li>#}
         </ul>
-        <div style="margin-top:130px">
+        <div style="margin-top:90px">
             <div class="row" style="margin-bottom: 0 !important;">
             <div class="col-6" style="background: #0a0b10">
                <a href="https://datalab.csd.auth.gr/" target="_blank"><img src="/static/img/DataLab_Logo_Transparent%20(2).png" style="margin-top: 20px;"></a>
@@ -170,6 +177,13 @@
             </div>
 
             <div class="row below-header">
+                <div class="row">
+                        <h1 id="title">Worldwide Spread<i class="fa fa-info-circle infopop-icon"></i> </h1>
+                        <div class="infopop">
+                            <p>The map below presents graphic information regarding the confirmed cases and deaths for each country.
+                            By clicking on one of the virus icons, you can see information for a specific country.</p>
+                        </div>
+                    </div>
                 <div class="col-2">
                             <button type="button" id="sidebarCollapse" class="btn btn-primary">
                                 <i class="fa fa-align-left"></i>
@@ -180,9 +194,7 @@
                             </button>
                         </div>
                 <div class="col">
-                    <div class="row">
-                        <h1 id="title">Worldwide Spread </h1>
-                    </div>
+
                 </div>
             </div>
 
@@ -190,11 +202,6 @@
                     <div class="col-9">
                         <div class="row case-charts" id="row7">
                     <div class="col">
-                        <h4>Χάρτης κρουσμάτων <i class="fa fa-info-circle infopop-icon"></i></h4>
-                        <div class="infopop">
-                            <p>Ο παρακάτω χάρτης παρουσιάζει γραφικά πληροφορίες σχετικά με κρούσματα και θανάτους για κάθε χώρα.
-                            Πατώντας σε κάποιο από τα εικονίδια ιού φαίνεται η πληροφορία για τη συγκεκριμένη χώρα.</p>
-                        </div>
                         <div class="map" id="map" style="height: 610px; width:100%"></div>
                     </div>
                     <!-- <div class="col-lg-6 col-md-6 col-sm-6"><div class="map" id="mapGR"></div></div> -->

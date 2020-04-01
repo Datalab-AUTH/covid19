@@ -24,7 +24,7 @@ body {
 h2, h4{
     font-weight: bold;
     line-height: 1em;
-    color: #4DC3FA;
+    color: #0bc3bb;
 }
 
 a, a:hover, a:focus {
@@ -87,10 +87,11 @@ p {
 
 #title{
     color:#0bc3bb;
-    margin-left:40px;
+    margin-left:70px;
     font-weight: bold;
     position: absolute;
     left: 3%;
+    margin-top: -50px;
 }
 
 /*LOGO*/

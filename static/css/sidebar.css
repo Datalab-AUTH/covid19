@@ -40,12 +40,25 @@
     text-align: center;
     background: #1F2739;
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 3px;
+    right: 2px;
     cursor: pointer;
     -webkit-transition: all 0.3s;
     -o-transition: all 0.3s;
     transition: all 0.3s;
+}
+
+.nav-tabs li{
+    border:solid 1px black;
+}
+
+.nav-tabs li:hover{
+    background-color: white;
+
+}
+
+.nav-tabs li #text:hover{
+    color: black; !important;
 }
 
 #dismiss:hover {
