@@ -9,6 +9,7 @@
     color: #ecf0f4;
     text-align: center;
     background-color: #1F2739;
+    border: solid 4px #242a33;
 }
 
 #info-table span {
@@ -49,16 +50,20 @@
 
 /* Background-color of the odd rows */
 .table-container tr:nth-child(odd) {
-    background-color: #323C50;
+    background-color:#384049 ;
 }
 
 /* Background-color of the even rows */
 .table-container tr:nth-child(even) {
-    background-color: #2C3446;
+    background-color:#313740 ;
 }
 
 .table-container th {
     background-color: #090a0c;
+
+}
+
+#country-cell, #cases-cell{
     border-right:solid 1px white;
 }
 
