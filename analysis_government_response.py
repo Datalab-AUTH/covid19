@@ -6,6 +6,7 @@ import preprocess_data as pre
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+
 OXFORD_PATH = 'data/OxCGRT_Download_latest_data.xlsx'
 ECDC_PATH = 'data/ecdcdata.csv'
 OXFORD_ECDC_PATH = 'data/oxford_ecdc.csv'
@@ -31,7 +32,7 @@ def read_preprocess_data(merge=False):
     """
     # Read CSVs
     oxford = pd.read_excel(OXFORD_PATH, converters={'Date': str})
-    ecdc = pd.read_csv(ECDC_PATH)
+    ecdc = pd.read_excel(ECDC_PATH, converters={'dateRep': str})
     # Convert country codes to ISO2
     if 'countryterritoryCode' not in ecdc and merge:  # ECDC data old format
         iso3_country_codes = pre.covert_country_name_to_country_code(ecdc['Countries and territories'].tolist(),
@@ -40,13 +41,39 @@ def read_preprocess_data(merge=False):
     # Remove Notes columns and last column (\t)
     oxford = oxford[oxford.columns.drop(list(oxford.filter(regex='Notes')))]
     oxford = oxford.drop(labels='Unnamed: 34', axis=1)
+
     # Convert dates to appropriate format
-    ecdc['Date'] = ecdc['DateRep'].str.replace('-', '')
+    ecdc['Date'] = ecdc['dateRep'].str.replace('-', '')
+    def keep_date(x):
+        x = x.split(' ')
+        return x[0]
+    ecdc['Date'] = ecdc['Date'].apply(lambda x: keep_date(x))
 
     # Fill empty cells with previous value for confirmed deaths and cases (cumulative) or 0 for rest of the fields
     oxford = oxford.groupby('CountryName').ffill().fillna(0).reindex(oxford.columns, axis=1)
+
     return oxford, ecdc
 
+def calc_cum_stats(data, column):
+    """
+    Given a specific numeric column it calculates its cumulative values.
+    :param column: the column for which the cumulative stats will be calculated
+    :param data: the overall dataframe
+    :return: a list containing the cumulative values of the given column
+    """
+
+    track = {}
+    cumulative = []
+
+    for idx, row in data.iterrows():
+        country = row['CountryCode']
+        stat = row[column]
+
+        track[country] = stat if (country not in track.keys()) else track[country] + stat
+
+        cumulative.append(track[country])
+
+    return cumulative
 
 # Currently not used
 def merge_ecdc_oxford_data():
@@ -59,12 +86,22 @@ def merge_ecdc_oxford_data():
     # Merge dataframes on ISO3 country code and date
     oxford_ecdc = oxford.merge(ecdc, how='left', left_on=['CountryCode', 'Date'],
                                right_on=['countryterritoryCode', 'Date'])
+
     # Fill empty cells with 0 for days without new cases reported by ECDC
-    oxford_ecdc[['Cases', 'Deaths']] = oxford_ecdc[['Cases', 'Deaths']].fillna(0)
+    oxford_ecdc[['Cases', 'Deaths']] = oxford_ecdc[['cases', 'deaths']].fillna(0)
+
+    # cumulative cases and deaths according to ecdc stats
+    oxford_ecdc['ConfirmedCases'] = calc_cum_stats(oxford_ecdc, 'Cases')
+    oxford_ecdc['ConfirmedDeaths'] = calc_cum_stats(oxford_ecdc, 'Deaths')
+
+    # drop unwanted columns
+    oxford_ecdc = oxford_ecdc.drop(['dateRep', 'day', 'month', 'year', 'countriesAndTerritories', 'geoId',
+                                    'countryterritoryCode', 'cases', 'deaths'], axis=1)
     # Write to file
     oxford_ecdc.to_csv(OXFORD_ECDC_PATH)
     print('Finished merging...')
 
+    return oxford_ecdc
 
 def get_first_cases_deaths_per_country(oxford):
     """
@@ -278,11 +315,11 @@ if __name__ == '__main__':
     Test main function
     """
     # 1. Read data (using only Oxford dataset for now)
-    oxford, _ = read_preprocess_data()
+    data = merge_ecdc_oxford_data()
     # 2. Find dates of first cases/deaths per country
-    first_cases_deaths_per_country = get_first_cases_deaths_per_country(oxford)
+    first_cases_deaths_per_country = get_first_cases_deaths_per_country(data)
     # 3. Find dates of first actions per country and per action type
-    first_actions_per_country = get_first_actions_per_country(oxford, is_general=True)
+    first_actions_per_country = get_first_actions_per_country(data, is_general=True)
     # 4. Calculate and plot the difference between patient_0/death_0 and first actions
     diff_case, diff_death = get_political_response_speed(first_cases_deaths_per_country, first_actions_per_country)
     print()
