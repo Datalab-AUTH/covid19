@@ -8,12 +8,11 @@ import pickle
 import sys
 
 
-def get_ecdc_data():
+def get_ecdc_data(filename='static/data/ecdcdata'):
     datetimeToday = datetime.today()
     date = datetimeToday.date()  # date now
     time = datetimeToday.time()  # time now
     yesterday = str(date - timedelta(1))  # yesterday
-    filename = 'static/data/ecdcdata'
     try:
         url = 'https://www.ecdc.europa.eu/sites/default/files/documents/COVID-19-geographic-disbtribution-worldwide-' + str(
             date) + '.xlsx'
@@ -37,13 +36,12 @@ def get_ecdc_data():
     print('received data from ', url)
 
 
-def get_oxford_government_action_data():
+def get_oxford_government_action_data(filename = 'data/oxford_data.xlsx'):
     """
     Retrieves an .xlsx file from Oxford University regarding governmental response to COVID19
     :return: Saves oxford_data.xlsx file to data folder
     """
     print('...getting latest Oxford data...')
-    filename = 'data/oxford_data.xlsx'
     try:
         url = 'https://www.bsg.ox.ac.uk/sites/default/files/OxCGRT_Download_latest_data.xlsx'
         urllib.request.urlretrieve(url, filename=filename)

@@ -1,20 +1,25 @@
 import datetime
+import math
 
 import pandas as pd
+import numpy as np
 import preprocess_data as pre
 # Import the libraries
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import seaborn as sns
 
+from get_data import get_oxford_government_action_data, get_ecdc_data
 
 OXFORD_PATH = 'data/OxCGRT_Download_latest_data.xlsx'
-ECDC_PATH = 'data/ecdcdata.csv'
+ECDC_PATH = 'data/ecdcdata.xlsx'
 OXFORD_ECDC_PATH = 'data/oxford_ecdc.csv'
 
 ACTION_COLUMNS = ['S1_School closing', 'S2_Workplace closing', 'S3_Cancel public events', 'S4_Close public transport',
-                    'S5_Public information campaigns', 'S6_Restrictions on internal movement',
-                    'S7_International travel controls', 'S8_Fiscal measures', 'S9_Monetary measures',
-                    'S10_Emergency investment in health care', 'S11_Investment in Vaccines', 'StringencyIndex']
+                  'S5_Public information campaigns', 'S6_Restrictions on internal movement',
+                  'S7_International travel controls', 'S8_Fiscal measures', 'S9_Monetary measures',
+                  'S10_Emergency investment in health care', 'S11_Investment in Vaccines', 'StringencyIndex']
+
 
 # Action columns including the IsGeneral columns per action
 # ACTION_COLUMNS = ['S1_School closing', 'S1_IsGeneral', 'S2_Workplace closing', 'S2_IsGeneral',
@@ -22,6 +27,13 @@ ACTION_COLUMNS = ['S1_School closing', 'S2_Workplace closing', 'S3_Cancel public
 # 'S5_Public information campaigns', 'S5_IsGeneral', 'S6_Restrictions on internal movement', 'S6_IsGeneral',
 # 'S7_International travel controls', 'S8_Fiscal measures', 'S9_Monetary measures',
 # 'S10_Emergency investment in health care', 'S11_Investment in Vaccines', 'StringencyIndex']
+
+
+def get_latest_data():
+    print("Getting latest data...")
+    get_ecdc_data(ECDC_PATH)
+    get_oxford_government_action_data(OXFORD_PATH)
+    print("Datasets are up to date!")
 
 
 def read_preprocess_data(merge=False):
@@ -44,15 +56,18 @@ def read_preprocess_data(merge=False):
 
     # Convert dates to appropriate format
     ecdc['Date'] = ecdc['dateRep'].str.replace('-', '')
+
     def keep_date(x):
         x = x.split(' ')
         return x[0]
+
     ecdc['Date'] = ecdc['Date'].apply(lambda x: keep_date(x))
 
     # Fill empty cells with previous value for confirmed deaths and cases (cumulative) or 0 for rest of the fields
     oxford = oxford.groupby('CountryName').ffill().fillna(0).reindex(oxford.columns, axis=1)
 
     return oxford, ecdc
+
 
 def calc_cum_stats(data, column):
     """
@@ -75,13 +90,12 @@ def calc_cum_stats(data, column):
 
     return cumulative
 
-# Currently not used
+
 def merge_ecdc_oxford_data():
     """
     Merges Oxford and ECDC data into a common dataframe to enable analysis
     :return: A CSV file containing the merged dataframe
     """
-    # todo Properly merge the two datasets or use Ilias' function
     oxford, ecdc = read_preprocess_data(merge=True)
     # Merge dataframes on ISO3 country code and date
     oxford_ecdc = oxford.merge(ecdc, how='left', left_on=['CountryCode', 'Date'],
@@ -102,6 +116,7 @@ def merge_ecdc_oxford_data():
     print('Finished merging...')
 
     return oxford_ecdc
+
 
 def get_first_cases_deaths_per_country(oxford):
     """
@@ -221,16 +236,15 @@ def get_political_response_speed(first_cases, first_actions):
 
     # Plot results
     # density_plot(diff_case, diff_death)
-    # individual_kde_hist_plots(diff_case, diff_death)
+    individual_hist_plots(diff_case, diff_death)
     # Plot nan values vs non-nans
-    plot_percentage_per_action(diff_case, diff_death)
+    plot_percentage_nulls_per_action(diff_case, diff_death)
     # Plot sorted speed per country
-    plot_sorted_speed_per_country(diff_case, diff_death)
+    # plot_sorted_speed_per_country(diff_case, diff_death)
     return diff_case, diff_death
 
 
-# todo Find more appropriate distribution for each action type (if it exists)
-def individual_kde_hist_plots(diff_case, diff_death):
+def individual_hist_plots(diff_case, diff_death, highlight_label='Greece', highlight_label_comparison='Italy'):
     """
     Plots a density plot (assuming normal distribution) per action type along with a histogram
     :param diff_case: Per country difference between patient 0 and actions taken by the government
@@ -239,16 +253,46 @@ def individual_kde_hist_plots(diff_case, diff_death):
     """
     # Density Plot and Histogram of all arrival delays
     for col in diff_case.columns:
-        sns.distplot(diff_case.loc[:, col], hist=True, kde=True,
-                     color='darkblue',
-                     hist_kws={'edgecolor': 'black'},
-                     kde_kws={'linewidth': 4})
+        w = 7  # Bins of width 7 days
+        n_bins = math.ceil((diff_case.loc[:, col].max() - diff_case.loc[:, col].min()) / w)
+        # bins contain the values in each bin of the histogram, patches represent the bins' objects
+        _, bins, patches = plt.hist(diff_case.loc[:, col], bins=n_bins, color='b', edgecolor='black')
+        highlight_value = diff_case.loc[highlight_label, col]
+        highlight_value_comparison = diff_case.loc[highlight_label_comparison, col]
+        blue_patch = None
+        green_patch = None
+        if not np.isnan(highlight_value):
+            # Find the country's bin index in the histogram
+            highlight_patch = np.searchsorted(bins, highlight_value, side='right') - 1
+            # Change the color of the specific bin
+            patches[highlight_patch].set_fc('r')  # Set specific country to different color
+            basic_patch = mpatches.Patch(color='red', label=highlight_label)
+            blue_patch = mpatches.Patch(color='blue', label='Rest of the World')
+            plt.legend(handles=[basic_patch, blue_patch])
+        else:
+            basic_patch = mpatches.Patch(color='red', label='No measures for ' + highlight_label)
+            blue_patch = mpatches.Patch(color='blue', label='Rest of the World')
+            plt.legend(handles=[basic_patch, blue_patch])
 
-        # Plot formatting
-        # plt.legend(prop={'size': 16}, title='Airline')
+        # if not np.isnan(highlight_value_comparison):
+        #     # Find the country's bin index in the histogram
+        #     highlight_patch_comparison = np.searchsorted(bins, highlight_value_comparison, side='right') - 1
+        #     # Change the color of the specific bin
+        #     patches[highlight_patch_comparison].set_fc('g')  # Set specific country to different color
+        #     comparison_patch = mpatches.Patch(color='green', label=highlight_label_comparison)
+        # # Plot formatting
+        # blue_patch = mpatches.Patch(color='blue', label='Rest of the World')
+        # if comparison_patch is not None and basic_patch is not None:
+        #     plt.legend(handles=[basic_patch, blue_patch, comparison_patch])
+        # elif basic_patch is not None:
+        #     plt.legend(handles=[basic_patch, blue_patch])
+        # else:
+        #     basic_patch = mpatches.Patch(color='red', label='No measure for Greece')
+        #     plt.legend(handles=[basic_patch, blue_patch])
+
         plt.title('Density and Histogram Plot of Government Response to COVID19')
         plt.xlabel('Delay (days) of ' + col + ' since patient 0')
-        plt.ylabel('Density')
+        plt.ylabel('Number of Countries')
         plt.savefig('img/' + col + '.png')
         plt.show()
 
@@ -264,7 +308,7 @@ def density_plot(diff_case, diff_death):
     # Don't plot stringency index
     columns_to_include = diff_case[diff_case.columns.difference(['StringencyIndex'])].columns
     diff_case[columns_to_include].plot.kde(figsize=(25, 10)).legend(loc='upper left')
-        #.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    # .legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.title('Density and Histogram Plot of Government Response to COVID19')
     plt.xlabel('Delay (days) of government action since patient 0')
     plt.ylabel('Density')
@@ -272,7 +316,7 @@ def density_plot(diff_case, diff_death):
     plt.show()
 
 
-def plot_percentage_per_action(diff_case, diff_death):
+def plot_percentage_nulls_per_action(diff_case, diff_death):
     """
     Basic plot of percentage of nulls per type of action
     :param diff_case: Per country difference between patient 0 and actions taken by the government
@@ -280,7 +324,8 @@ def plot_percentage_per_action(diff_case, diff_death):
     :return: Plot figure and save to file
     """
     percentage_of_nulls = diff_case.isna().mean().round(4) * 100
-    percentage_of_nulls.plot.bar()
+    percentage_of_nulls.plot.bar(figsize=(20, 14))
+    plt.xticks(rotation=30)
     plt.ylim([0, 100])
     plt.savefig('img/percentage_nulls.png')
     plt.show()
@@ -314,6 +359,8 @@ if __name__ == '__main__':
     """
     Test main function
     """
+    # 0. Get latest data (run only once per day)
+    # get_latest_data()
     # 1. Read data (using only Oxford dataset for now)
     data = merge_ecdc_oxford_data()
     # 2. Find dates of first cases/deaths per country
