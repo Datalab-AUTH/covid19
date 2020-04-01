@@ -66,6 +66,7 @@
                     <span style="display: block">Deceased: <span style="font-weight: bold" id="total-deaths"></span></span>
                     <span style="display: block">Recovered:</span>
                     <span style="display: block">Infected countries:</span>
+                    <span id="time">No</span>
                 </div>
             </li>
             <li style="margin-top:15px;">
@@ -613,6 +614,17 @@
 
 <script type="text/javascript">
     var path = "{{ url_for('static', filename='data/table-data.csv') }}";
+</script>
+
+<script type="text/javascript">
+    var currentdate = new Date();
+    var datetime = "Last update: " + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/"
+                + currentdate.getFullYear() + " @ "
+                + currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
+                + currentdate.getSeconds();
+    document.getElementById('time').textContent = datetime;
 </script>
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
