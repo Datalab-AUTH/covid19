@@ -346,6 +346,13 @@ class recovered_greece(Resource):
 
 api.add_resource(recovered_greece,'/recovered_greece')
 
+class recovered_global(Resource):
+    def get(self):
+        from analysis import get_recovered_cases_world
+        return (int(get_recovered_cases_world()))
+
+api.add_resource(recovered_global,'/recovered_global')
+
 class mapped_results(Resource):
     def get(self):
         from analysis import get_mapped_data
@@ -385,6 +392,15 @@ class cases_after_first_100(Resource):
         return jsonify(mydict)
 
 api.add_resource(cases_after_first_100,'/cases_after_first_100')
+
+
+class get_countries(Resource):
+    def get(self):
+        from analysis import get_all_countries
+        countries = get_all_countries(df)
+        return jsonify(countries)
+
+api.add_resource(get_countries,'/get_countries')
 
 if __name__=='__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
