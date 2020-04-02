@@ -324,6 +324,7 @@ def get_days_deaths_after_first_death():
        'Negative affect', 'Social support', 'Freedom', 'Corruption',
        'Generosity', 'logCapita', 'Healthy life expectancy', 'lat',
        'lon', 'hf_score'], axis=1)
+    adf['DateRep'] =  pd.to_datetime(adf['DateRep'])
     adf = adf.sort_values(by='DateRep')
     adf = adf[adf['DateRep']>=first]
     adf['total_deaths'] = adf.groupby(['CountryExp'])['NewDeaths'].cumsum()
@@ -349,13 +350,13 @@ def get_days_deaths_after_first_death():
 
 def get_cases_after_100():
     df = pickle.load(open('static/data/df.pickle','rb'))
-    countries = ['Greece','Germany','Italy','Spain','United Kingdom of Great Britain and Northern Ireland','United States of America']
+    countries = ['Greece','Germany','Italy','Spain','United_Kingdom','United_States_of_America']
     adf =df[df['CountryExp'].isin(countries)]
-    adf=adf.drop(['Countries and territories', 'GeoId', 'region',
-       'Country (region)', 'iso2', 'Ladder', 'SD of Ladder', 'Positive affect',
+    adf=adf.drop([ 'GeoId', 'region', 'iso2', 'Ladder', 'SD of Ladder', 'Positive affect',
        'Negative affect', 'Social support', 'Freedom', 'Corruption',
        'Generosity', 'logCapita', 'Healthy life expectancy', 'lat',
-       'lon', 'hf_score', 'ISO_code'], axis=1)
+       'lon', 'hf_score'], axis=1)
+    adf['DateRep'] =  pd.to_datetime(adf['DateRep'])
     adf = adf.sort_values(by='DateRep')
     adf['total_cases'] = adf.groupby(['CountryExp'])['NewConfCases'].cumsum()
     adf = adf.sort_values(by='DateRep')
@@ -387,4 +388,92 @@ def get_cases_after_100():
 def get_all_countries(df):
     return sorted(list(set(df['CountryExp'].tolist())))
 
+def get_correlation_after_x_deaths(df,column,other_data,limit):
+    df=df[df['region'].isin(['Eastern Europe','Western Europe'])]
+    if other_data=='oecd':
+        other = pd.read_csv('data/oecd_data.csv')
+        other = other.rename(columns={'Countries and territories':'CountryExp'})
+        other = other[['CountryExp',col]]
+        other = other.dropna()
+    else:
+        other = pd.read_csv('data/world_bank_data.csv')
+        other = other.rename(columns={'Countries and territories':'CountryExp'})
+        other = other[['CountryExp',col]]
+        other = other.dropna()
+    df0 = pd.merge(df,other,on='CountryExp',how='left')
+    df1 =df0.groupby(['CountryExp','Pop_Data.2018',col])['NewDeaths'].sum().reset_index()
+    df1['percentage']=df1['NewDeaths']/df1['Pop_Data.2018']
+    df1=df1[df1['NewDeaths']>=limit]
+    from scipy.stats import spearmanr
+    if col in ['Hospital Beds','Life expectancy']:
+        corr, _ = spearmanr(df1[column], df1['NewDeaths'])
+    else:
+        corr, _ = spearmanr(df1[column], df1['percentage'])
+    return corr, df1['NewDeaths'],df1[column]
+
+def get_correlation_after_x_cases(df,column,other_data,limit):
+    df=df[df['region'].isin(['Eastern Europe','Western Europe'])]
+    if other_data=='oecd':
+        other = pd.read_csv('data/oecd_data.csv')
+        other = other.rename(columns={'Countries and territories':'CountryExp'})
+        other = other[['CountryExp',col]]
+        other = other.dropna()
+    else:
+        other = pd.read_csv('data/world_bank_data.csv')
+        other = other.rename(columns={'Countries and territories':'CountryExp'})
+        other = other[['CountryExp',col]]
+        other = other.dropna()
+    df0 = pd.merge(df,other,on='CountryExp',how='left')
+    df1 =df0.groupby(['CountryExp','Pop_Data.2018',col])['NewConfCases'].sum().reset_index()
+    print (df1.head(100))
+    df1['percentage']=df1['NewConfCases']/df1['Pop_Data.2018']
+    df1=df1[df1['NewConfCases']>=limit]
+    from scipy.stats import spearmanr
+    if col in ['Hospital Beds','Life expectancy']:
+        corr, _ = spearmanr(df1[column], df1['NewConfCases'])
+    else:
+        corr, _ = spearmanr(df1[column], df1['percentage'])
+    return corr, df1['NewConfCases'],df1[column]
+
+def doubling_rate_deaths(df,limit):
+    df['DateRep'] = pd.to_datetime(df['DateRep'])
+    df=df.sort_values('DateRep')
+    df['total_deaths'] = df.groupby(['CountryExp'])['NewDeaths'].cumsum()
+    # df['total_cases'] = df.groupby(['CountryExp'])['NewConfCases'].cumsum()
+    df=df[df['total_deaths']>limit]
+    df['days']=np.nan
+    for c in list(set(df['CountryExp'].tolist())):
+        j=0
+        for i,r in df.iterrows():
+            if r['CountryExp']==c:
+                j+=1
+                df.at[i,'days'] = j
+    df =df[['CountryExp','total_deaths','days']]
+    df=df.sort_values(by='days')
+    mydict={}
+    for d in df['days']:
+        df0 = df[df['days']==d]
+        mydict[d]=dict(zip(df0.CountryExp, df0.total_deaths))
+    return mydict
+
+def doubling_rate_cases(df,limit):
+    df['DateRep'] = pd.to_datetime(df['DateRep'])
+    df=df.sort_values('DateRep')
+    df['total_cases'] = df.groupby(['CountryExp'])['NewConfCases'].cumsum()
+    # df['total_cases'] = df.groupby(['CountryExp'])['NewConfCases'].cumsum()
+    df=df[df['total_cases']>limit]
+    df['days']=np.nan
+    for c in list(set(df['CountryExp'].tolist())):
+        j=0
+        for i,r in df.iterrows():
+            if r['CountryExp']==c:
+                j+=1
+                df.at[i,'days'] = j
+    df =df[['CountryExp','total_cases','days']]
+    df=df.sort_values(by='days')
+    mydict={}
+    for d in df['days']:
+        df0 = df[df['days']==d]
+        mydict[d]=dict(zip(df0.CountryExp, df0.total_cases))
+    return mydict
 
