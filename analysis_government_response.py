@@ -12,7 +12,7 @@ import seaborn as sns
 from get_data import get_oxford_government_action_data, get_ecdc_data
 
 OXFORD_PATH = 'data/OxCGRT_Download_latest_data.xlsx'
-ECDC_PATH = 'data/ecdcdata.csv'
+ECDC_PATH = 'data/ecdcdata.xlsx'
 OXFORD_ECDC_PATH = 'data/oxford_ecdc.csv'
 
 ACTION_COLUMNS = ['S1_School closing', 'S2_Workplace closing', 'S3_Cancel public events', 'S4_Close public transport',
