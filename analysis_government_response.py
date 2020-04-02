@@ -12,13 +12,13 @@ import seaborn as sns
 from get_data import get_oxford_government_action_data, get_ecdc_data
 
 OXFORD_PATH = 'data/OxCGRT_Download_latest_data.xlsx'
-ECDC_PATH = 'data/ecdcdata.xlsx'
+ECDC_PATH = 'data/ecdcdata.csv'
 OXFORD_ECDC_PATH = 'data/oxford_ecdc.csv'
 
 ACTION_COLUMNS = ['S1_School closing', 'S2_Workplace closing', 'S3_Cancel public events', 'S4_Close public transport',
-                  'S5_Public information campaigns', 'S6_Restrictions on internal movement',
-                  'S7_International travel controls', 'S8_Fiscal measures', 'S9_Monetary measures',
-                  'S10_Emergency investment in health care', 'S11_Investment in Vaccines', 'StringencyIndex']
+                    'S5_Public information campaigns', 'S6_Restrictions on internal movement',
+                    'S7_International travel controls', 'S8_Fiscal measures', 'S9_Monetary measures',
+                    'S10_Emergency investment in health care', 'S11_Investment in Vaccines', 'StringencyIndex']
 
 
 # Action columns including the IsGeneral columns per action
@@ -244,6 +244,92 @@ def get_political_response_speed(first_cases, first_actions):
     return diff_case, diff_death
 
 
+def get_cases_deaths_before_response(data, type='Cases'):
+    """
+        Gets the cases and deaths before an action has been taken (per action)
+        :param data: the overall dataframe
+        :param type: Cases or Deaths
+        :return two dataframes: with number of cases (deaths respectively) per action
+    """
+    if type == 'Cases':
+        type_column = 'ConfirmedCases'
+    else:
+        type_column = 'ConfirmedDeaths'
+
+    print("Calculating Impact of Political Response Delay...")
+    # drop unnecessary column
+    cols_to_keep = ACTION_COLUMNS[:-1] # remove stringency index
+
+    # If a country has no reported cases, we remove it from the analysis
+    countries = data['CountryName'].unique()
+    countries_to_drop = list()
+    for i, c in enumerate(countries):
+        max_val = data[data['CountryName'] == c][type_column].max()
+        if max_val <= 0:
+               countries_to_drop.append(c)
+    data = data[~data['CountryName'].isin(countries_to_drop)]
+
+    # Calculate the requested values
+    countries = data['CountryName'].unique()
+
+    diff = pd.DataFrame(index=countries, columns = cols_to_keep)
+
+    # for each country
+    for i, c in enumerate(countries):
+        country_specific = data[data['CountryName'] == c]
+        country_specific = country_specific.sort_values(by=['Date'])
+
+        filling_list = list()
+
+        # for each action
+        for colName, colValues in country_specific.iteritems():
+            if colName in cols_to_keep:
+                # if the action has been put into operation find the first day, else None
+                if len(colValues.to_numpy().nonzero()[0]):
+                    first_date_action_index = colValues.to_numpy().nonzero()[0][0]
+                    type_val = country_specific.iloc[first_date_action_index][type_column]
+
+                    filling_list.append(int(type_val))
+                else:
+                    filling_list.append(None)
+
+        diff.loc[c] = filling_list
+
+    return diff
+
+
+def cases_deaths_hist_plot(data, type='Cases', keep=None):
+    """
+    Plots a density plot (assuming normal distribution) per action type along with a histogram
+    :param keep: keep countries where number of cases or deaths is below of this value
+    :param data: Per country cases or deaths before each action
+    :param type: Cases or Deaths
+    :return: Visualizes the density plots and stores them as files
+    """
+    greek_values = data.loc['Greece'].tolist()
+
+    # Density Plot and Histogram of all arrival delays
+    for idx, col in enumerate(data.columns):
+
+        if keep: # keep above threshold
+            temp = data[data[col] < keep]
+        temp = temp[temp[col].notnull()] # remove null
+
+        sns.distplot(temp[col], hist=True, kde=False,
+                     color='darkblue',
+                     hist_kws={'edgecolor': 'black'},
+                     kde_kws={'linewidth': 4})
+        if greek_values[idx]:
+            plt.axvline(x=greek_values[idx], c='red', label='Greece: {}'.format(greek_values[idx]))
+            plt.legend()
+        # Plot formatting
+        plt.title('Density and Histogram Plot of Government Response to COVID19')
+        plt.xlabel(type + ' before action ' + col)
+        plt.ylabel('Density')
+        plt.savefig('img/' + type + ' ' + col + '.png')
+        plt.show()
+
+
 def individual_hist_plots(diff_case, diff_death, highlight_label='Greece', highlight_label_comparison='Italy'):
     """
     Plots a density plot (assuming normal distribution) per action type along with a histogram
@@ -368,5 +454,11 @@ if __name__ == '__main__':
     # 3. Find dates of first actions per country and per action type
     first_actions_per_country = get_first_actions_per_country(data, is_general=True)
     # 4. Calculate and plot the difference between patient_0/death_0 and first actions
-    diff_case, diff_death = get_political_response_speed(first_cases_deaths_per_country, first_actions_per_country)
-    print()
+    # diff_case, diff_death = get_political_response_speed(first_cases_deaths_per_country, first_actions_per_country)
+    # 5. Find number of cases or deaths before first day of action per country and per action type
+    diff_case = get_cases_deaths_before_response(data, 'Cases')
+    diff_death = get_cases_deaths_before_response(data, 'Deaths')
+    cases_deaths_hist_plot(diff_case, 'Cases', 2000)
+    cases_deaths_hist_plot(diff_death, 'Deaths', 100)
+
+
