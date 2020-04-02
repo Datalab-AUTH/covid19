@@ -272,6 +272,10 @@ def get_recovered_cases_in_greece():
     data = requests.get("https://covid19.mathdro.id/api/countries/Greece/recovered").json()
     return data[0]['recovered']
 
+def get_recovered_cases_world():
+    data = requests.get("https://covid19.mathdro.id/api").json()
+    return data['recovered']['value']
+
 def get_mapped_data(df):
     df1 = df.groupby(['CountryExp','lat','lon'])['NewDeaths','NewConfCases'].sum().reset_index()
     return df1
@@ -379,3 +383,6 @@ def get_cases_after_100():
                     countrydict[c]=round(np.log(val+1),2)
         casedict[str(d)] = countrydict
     return casedict
+
+def get_all_countries(df):
+    return sorted(list(set(df['CountryExp'].tolist())))
