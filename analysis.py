@@ -21,29 +21,29 @@ def get_total_deaths(df):#
     return df['NewDeaths'].sum()
 
 def get_total_casesEU(df):#
-    df = df[df['EU']=='EU']
+    df = df[df['region'].isin(['Eastern Europe','Western Europe'])]
     return df['NewConfCases'].sum()
 
 def get_total_deathsEU(df):#
-    df = df[df['EU']=='EU']
+    df = df[df['region'].isin(['Eastern Europe','Western Europe'])]
     return df['NewDeaths'].sum()
 
 def get_total_cases_nonEU(df):
-    df = df[df['EU']!='EU']
+    df = df[~df['region'].isin(['Eastern Europe','Western Europe'])]
     return df['NewConfCases'].sum()
 
 def get_total_deaths_nonEU(df):#
-    df = df[df['EU']!='EU']
+    df = df[~df['region'].isin(['Eastern Europe','Western Europe'])]
     return df['NewDeaths'].sum()
 
 def get_todays_cases_EU(df):
-    df=df[df['EU']=='EU']
+    df=df[df['region'].isin(['Eastern Europe','Western Europe'])]
     df1 = df.groupby('DateRep')['NewConfCases'].sum().reset_index()
     df1 = df1.sort_values(by='DateRep')
     return df1['NewConfCases'].iloc[-1]
 
 def get_todays_cases_nonEU(df):
-    df=df[df['EU']!='EU']
+    df=df[~df['region'].isin(['Eastern Europe','Western Europe'])]
     df1 = df.groupby('DateRep')['NewConfCases'].sum().reset_index()
     df1 = df1.sort_values(by='DateRep')
     return df1['NewConfCases'].iloc[-1]
@@ -54,13 +54,13 @@ def get_todays_cases_global(df):
     return df1['NewConfCases'].iloc[-1]
 
 def get_todays_deaths_EU(df):
-    df=df[df['EU']=='EU']
+    df=df[df['region'].isin(['Eastern Europe','Western Europe'])]
     df1 = df.groupby('DateRep')['NewDeaths'].sum().reset_index()
     df1 = df1.sort_values(by='DateRep')
     return df1['NewDeaths'].iloc[-1]
 
 def get_todays_deaths_nonEU(df):
-    df=df[df['EU']!='EU']
+    df=df[~df['region'].isin(['Eastern Europe','Western Europe'])]
     df1 = df.groupby('DateRep')['NewDeaths'].sum().reset_index()
     df1 = df1.sort_values(by='DateRep')
     return df1['NewDeaths'].iloc[-1]
@@ -229,7 +229,7 @@ def get_total_distribution_of_deaths_per_specific_country(df,country):
     return stats_df
 
 def get_cases_per_capita(df):
-    df1 = df.groupby('Log of GDP per capita')['NewConfCases'].sum().reset_index()
+    df1 = df.groupby('logCapita')['NewConfCases'].sum().reset_index()
     return df1
 
 def get_cases_per_life_expectancy(df):
@@ -264,8 +264,9 @@ def get_cases_per_rank(df):
     return df1
 
 def get_countries_per_capita(df):
-    df = df[df['Log of GDP per capita']>-1]
-    df1 = df.groupby('CountryExp')['Log of GDP per capita'].mean().to_frame('capita').reset_index()
+    df0 = df
+    df0 = df0[df0['logCapita']>-1]
+    df1 = df0.groupby('CountryExp')['logCapita'].mean().to_frame('capita').reset_index()
     return df1
 
 def get_recovered_cases_in_greece():
@@ -310,7 +311,7 @@ def get_greek_data():
     return (df)
 
 def get_total_cases_per_countryEU_per_day(df):
-    df1 = df.groupby(['DateRep','EU'])['NewConfCases'].sum().reset_index()
+    df1 = df.groupby(['DateRep','region'])['NewConfCases'].sum().reset_index()
     return df1
 
 def get_days_deaths_after_first_death():
@@ -319,11 +320,10 @@ def get_days_deaths_after_first_death():
     firstdeath = pickle.load(open('static/data/firstdeath.pickle','rb'))
     first = min(firstdeath.values())
     adf =df[df['CountryExp'].isin(countries)]
-    adf=adf.drop(['Countries and territories', 'GeoId', 'EU',
-       'Country (region)', 'iso2', 'Ladder', 'SD of Ladder', 'Positive affect',
+    adf=adf.drop(['GeoId', 'region', 'iso2', 'Ladder', 'SD of Ladder', 'Positive affect',
        'Negative affect', 'Social support', 'Freedom', 'Corruption',
-       'Generosity', 'Log of GDP per capita', 'Healthy life expectancy', 'lat',
-       'lon', 'hf_score', 'ISO_code'], axis=1)
+       'Generosity', 'logCapita', 'Healthy life expectancy', 'lat',
+       'lon', 'hf_score'], axis=1)
     adf = adf.sort_values(by='DateRep')
     adf = adf[adf['DateRep']>=first]
     adf['total_deaths'] = adf.groupby(['CountryExp'])['NewDeaths'].cumsum()
@@ -351,10 +351,10 @@ def get_cases_after_100():
     df = pickle.load(open('static/data/df.pickle','rb'))
     countries = ['Greece','Germany','Italy','Spain','United Kingdom of Great Britain and Northern Ireland','United States of America']
     adf =df[df['CountryExp'].isin(countries)]
-    adf=adf.drop(['Countries and territories', 'GeoId', 'EU',
+    adf=adf.drop(['Countries and territories', 'GeoId', 'region',
        'Country (region)', 'iso2', 'Ladder', 'SD of Ladder', 'Positive affect',
        'Negative affect', 'Social support', 'Freedom', 'Corruption',
-       'Generosity', 'Log of GDP per capita', 'Healthy life expectancy', 'lat',
+       'Generosity', 'logCapita', 'Healthy life expectancy', 'lat',
        'lon', 'hf_score', 'ISO_code'], axis=1)
     adf = adf.sort_values(by='DateRep')
     adf['total_cases'] = adf.groupby(['CountryExp'])['NewConfCases'].cumsum()
@@ -386,3 +386,5 @@ def get_cases_after_100():
 
 def get_all_countries(df):
     return sorted(list(set(df['CountryExp'].tolist())))
+
+

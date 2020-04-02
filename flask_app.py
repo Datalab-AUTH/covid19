@@ -22,6 +22,7 @@ CORS(app)
 def home():
     global df
     df = pickle.load(open('static/data/df.pickle', 'rb'))
+    print (df.columns)
     return render_template('index.html')
 
 
@@ -112,25 +113,6 @@ class totalDays(Resource):
         return (mydict)
 
 api.add_resource(totalDays,'/totalDays')
-
-class casesPerCapita(Resource):
-    def get(self):
-        from analysis import get_cases_per_capita
-        df1 = get_cases_per_capita(df)
-        mydict = dict(zip(df1['Log of GDP per capita'], df1['NewConfCases']))
-        return (mydict)
-
-api.add_resource(casesPerCapita,'/casesPerCapita')
-
-class casesPerLifeExpectancy(Resource):
-    def get(self):
-        from analysis import get_cases_per_life_expectancy
-        df1 = get_cases_per_life_expectancy(df)
-        mydict = dict(zip(df1['Healthy life expectancy'], df1['NewConfCases']))
-        return (mydict)
-
-api.add_resource(casesPerLifeExpectancy,'/casesPerLifeExpectancy')
-
 
 class totalCasesHumanFreedom(Resource):
     def get(self):
@@ -233,12 +215,11 @@ api.add_resource(human_freedom_per_country,'/human_freedom_per_country')
 class china_vs_EU(Resource):
     def get(self):
         from analysis import get_total_cases_per_country_per_day,get_total_cases_per_countryEU_per_day
-        newdf = df
-        df1 = get_total_cases_per_country_per_day(newdf)
-        df2 = get_total_cases_per_countryEU_per_day(newdf)
+        df1 = get_total_cases_per_country_per_day(df)
+        df2 = get_total_cases_per_countryEU_per_day(df)
         dfCN=df1[df1['CountryExp']=='China']
         dfCN=dfCN.rename(columns={"NewConfCases": "NewConfCasesCN"})
-        dfEU=df2[df2['EU']=='EU']
+        dfEU=df2[df2['region'].isin(['Eastern Europe','Western Europe'])]
         compare = pd.merge(dfCN,dfEU,on='DateRep')
         compare = compare[20:]
         compare['DateRep']= compare['DateRep'].astype(str)
