@@ -53,6 +53,7 @@ getResultFromEndpoint('/totalDeaths', function(result) {
     $('#total-deaths').text(totalDeaths);
 });
 
+
 getResultFromEndpoint('/totalCasesCountry', function(result) {
     var totalCasesGr = result['Greece'];
     $('#total-cases-gr').text(totalCasesGr);
@@ -66,6 +67,16 @@ getResultFromEndpoint('/totalDeathsCountry', function(result) {
 getResultFromEndpoint('/totalDays', function(result) {
     $('#time-frame').text('Από: ' + result['first'] + '  Μέχρι: ' + result['last']);
 });
+
+getResultFromEndpoint('/recovered_global', function(result) {
+$('#recovered_global').text(result);
+})
+
+getResultFromEndpoint('/get_countries', function(result) {
+    var countries = parseInt(result);
+    $('#countries').text(countries)
+    console.log(countries)
+})
 
 getResultFromEndpoint('/casesEU', function(result) {
     $('#cases-EU').text(result);
