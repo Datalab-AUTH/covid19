@@ -386,10 +386,10 @@ def get_cases_after_100():
     return casedict
 
 def get_all_countries(df):
-    return sorted(list(set(df['CountryExp'].tolist())))
+    return len(set(df['CountryExp'].tolist()))
 
-def get_correlation_after_x_deaths(df,column,other_data,limit):
-    df=df[df['region'].isin(['Eastern Europe','Western Europe'])]
+def get_correlation_after_x_deaths(df,col,other_data,limit):
+    dfin=df[df['region'].isin(['Eastern Europe','Western Europe'])]
     if other_data=='oecd':
         other = pd.read_csv('data/oecd_data.csv')
         other = other.rename(columns={'Countries and territories':'CountryExp'})
@@ -400,18 +400,18 @@ def get_correlation_after_x_deaths(df,column,other_data,limit):
         other = other.rename(columns={'Countries and territories':'CountryExp'})
         other = other[['CountryExp',col]]
         other = other.dropna()
-    df0 = pd.merge(df,other,on='CountryExp',how='left')
+    df0 = pd.merge(dfin,other,on='CountryExp',how='left')
     df1 =df0.groupby(['CountryExp','Pop_Data.2018',col])['NewDeaths'].sum().reset_index()
     df1['percentage']=df1['NewDeaths']/df1['Pop_Data.2018']
     df1=df1[df1['NewDeaths']>=limit]
     from scipy.stats import spearmanr
     if col in ['Hospital Beds','Life expectancy']:
-        corr, _ = spearmanr(df1[column], df1['NewDeaths'])
+        corr, _ = spearmanr(df1[col], df1['NewDeaths'])
     else:
-        corr, _ = spearmanr(df1[column], df1['percentage'])
-    return corr, df1['NewDeaths'],df1[column]
+        corr, _ = spearmanr(df1[col], df1['percentage'])
+    return corr, df1['NewDeaths'],df1[col]
 
-def get_correlation_after_x_cases(df,column,other_data,limit):
+def get_correlation_after_x_cases(df,col,other_data,limit):
     df=df[df['region'].isin(['Eastern Europe','Western Europe'])]
     if other_data=='oecd':
         other = pd.read_csv('data/oecd_data.csv')
@@ -430,10 +430,10 @@ def get_correlation_after_x_cases(df,column,other_data,limit):
     df1=df1[df1['NewConfCases']>=limit]
     from scipy.stats import spearmanr
     if col in ['Hospital Beds','Life expectancy']:
-        corr, _ = spearmanr(df1[column], df1['NewConfCases'])
+        corr, _ = spearmanr(df1[col], df1['NewConfCases'])
     else:
-        corr, _ = spearmanr(df1[column], df1['percentage'])
-    return corr, df1['NewConfCases'],df1[column]
+        corr, _ = spearmanr(df1[col], df1['percentage'])
+    return corr, df1['NewConfCases'],df1[col]
 
 def doubling_rate_deaths(df,limit):
     df['DateRep'] = pd.to_datetime(df['DateRep'])

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify,render_template
+from flask import Flask, jsonify,render_template,request
 from flask_restful import Resource, Api
 import analysis
 import pandas as pd
@@ -378,10 +378,50 @@ api.add_resource(cases_after_first_100,'/cases_after_first_100')
 class get_countries(Resource):
     def get(self):
         from analysis import get_all_countries
-        countries = get_all_countries(df)
-        return jsonify(countries)
+        num = get_all_countries(df)
+        return int(num)
 
 api.add_resource(get_countries,'/get_countries')
+
+class get_deaths_correlation(Resource):
+    def get(self):
+        from analysis import get_correlation_after_x_deaths
+        column = request.args.get('column',default='Immunization to Influenza', type = str)
+        data = request.args.get('data',default='oecd', type = str)
+        limit = request.args.get('deaths', default=30, type = int)
+        cor,deathVals,featureVals = get_correlation_after_x_deaths(df,column,data,limit)
+        return (cor)
+
+api.add_resource(get_deaths_correlation,'/get_deaths_correlation')
+
+class get_cases_correlation(Resource):
+    def get(self):
+        from analysis import get_correlation_after_x_cases
+        column = request.args.get('column',default='Immunization to Influenza', type = str)
+        data = request.args.get('data',default='oecd', type = str)
+        limit = request.args.get('cases', default=100, type = int)
+        cor,deathVals,featureVals = get_correlation_after_x_cases(df,column,data,limit)
+        return (cor)
+
+api.add_resource(get_cases_correlation,'/get_cases_correlation')
+
+class get_cases_rate(Resource):
+    def get(self):
+        from analysis import doubling_rate_cases
+        limit = request.args.get('limit', default=1000, type = int)
+        mydict = doubling_rate_cases(df,limit)
+        return jsonify(mydict)
+
+api.add_resource(get_cases_rate,'/get_cases_rate')
+
+class get_deaths_rate(Resource):
+    def get(self):
+        from analysis import doubling_rate_deaths
+        limit = request.args.get('limit', default=20, type = int)
+        mydict = doubling_rate_deaths(df,limit)
+        return jsonify(mydict)
+
+api.add_resource(get_deaths_rate,'/get_deaths_rate')
 
 if __name__=='__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
