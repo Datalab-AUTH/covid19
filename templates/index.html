@@ -384,12 +384,12 @@
                                 <table class="table-container" id="info-table">
                                     <col width="130">
                                     <col width="80">
-                                    <col width="100"
+                                    <col width="100">
                                     <thead>
                                     <tr>
-                                        <th id="country-cell"><span>Country</span></th>
-                                        <th id="cases-cell"><span>Cases</span></th>
-                                        <th><span>Deceased</span></th>
+                                        <th id="country-cell"><a onclick="SortTable(0,'T')"><span style="cursor: pointer">Country</span></a></th>
+                                        <th  id="cases-cell"><a onclick="SortTable(1,'N')"><span style="margin-right:15px;cursor: pointer">Cases</span></a></th>
+                                        <th><a onclick="SortTable(2,'N')"><span  style="margin-right:15px;cursor: pointer">Deceased</span></a></th>
                                     </tr>
                                     </thead>
                                     <tbody id="info-table-body">
@@ -642,6 +642,7 @@
 
 <!--script for this page-->
 <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+<script src="{{ url_for('static', filename='js/table.js')}}"></script>
 <script src="{{ url_for('static', filename='js/morris/morris-plain.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bind-variables.js') }}"></script>
 
