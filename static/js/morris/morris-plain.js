@@ -159,16 +159,14 @@ var Script = function() {
             markers.push({'Country': key, 'lat':value[0], 'lng':value[1],'Deaths':value[2],'Cases':value[3]});
         }
 
-        var map = L.map( 'map', {
-        center: [42.295999 , 23.225999],
-        minZoom: 1,
-        zoom: 3
-        });
-
-        L.tileLayer( 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-          attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community',
-          subdomains: ['a', 'b', 'c']
-        }).addTo( map );
+        var map = L.map('map',{
+                    center: [52.940692, -3.290210],
+                    zoom: 2});
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+        L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+                            maxZoom: 20,
+	                        attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'}).addTo(map);
 
         var myURL = jQuery( 'script[src$="morris-plain.js"]' ).attr( 'src' ).replace( 'morris-plain.js', '' );
 
@@ -180,11 +178,16 @@ var Script = function() {
           popupAnchor: [0, -14]
         });
 
+
+
         for ( var i=0; i < markers.length; ++i )
-        {L.marker( [markers[i].lat, markers[i].lng], {icon: myIcon} )
-          .bindPopup( "<strong> Country:</strong>"+markers[i].Country+"<br>"+"<strong>Deaths:</strong>"+
-            markers[i].Deaths+"<br>"+"<strong>Cases:</strong>"+markers[i].Cases)
-          .addTo( map );}
+            {L.circle( [markers[i].lat, markers[i].lng], {color: '#05aaac',
+                        fillColor: '#05aaac',
+                        fillOpacity: 0.5,
+                        radius: markers[i].Cases*15} )
+                .bindPopup( "<strong> Country:</strong>"+markers[i].Country+"<br>"+"<strong>Deaths:</strong>"+
+                markers[i].Deaths+"<br>"+"<strong>Cases:</strong>"+markers[i].Cases)
+                .addTo( map );}
     });
 }();
 
