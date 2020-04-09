@@ -9,8 +9,8 @@ var Script = function() {
                 dataType: 'json',
                 success: callback,
                 error: function (x, e) {
-                    console.log('ERROR. endpoint: ' + endpoint 
-                            + ', status: ' + x.status 
+                    console.log('ERROR. endpoint: ' + endpoint
+                            + ', status: ' + x.status
                             + ', response: ' + x.responsetext
                             + ', error: ' + e)
                 }
@@ -99,7 +99,7 @@ var Script = function() {
         var capitacasesData = [];
         for (let [key, value] of Object.entries(capitacases)) {
             capitacasesData.push({
-                'Country': key, 
+                'Country': key,
                 'Cases':Math.log(value[0]+1),
                 'Corruption': Math.log(value[1]+1.1)});
         }
@@ -155,8 +155,10 @@ var Script = function() {
     // GLOBAL MAP
     getResultFromEndpoint('/mapped_results', function(mapped) {
         var markers = [];
+        var cases =[];
         for (let [key, value] of Object.entries(mapped)) {
             markers.push({'Country': key, 'lat':value[0], 'lng':value[1],'Deaths':value[2],'Cases':value[3]});
+            cases.push(value[3]);
         }
 
         var map = L.map('map',{
@@ -178,16 +180,46 @@ var Script = function() {
           popupAnchor: [0, -14]
         });
 
+        function MinMax(val, max, min) { return ((val - min) / (max - min))*50; }
+        min = Math.min(...cases)
+        max = Math.max(...cases)
+        console.log(max,min);
 
+        function selectColor(val,cases) {
+            var quants = ss.quantile(cases, 0.25);
+            var quants75 = ss.quantile(cases,0.75);
+            if (val<quants){
+                return '#fee0d2';
+            }
+            else if (val>=quants && val<quants75){
+                return '#fc9272';
+            }
+            else {
+                return '#de2d26';
+            }
+        }
 
         for ( var i=0; i < markers.length; ++i )
-            {L.circle( [markers[i].lat, markers[i].lng], {color: '#05aaac',
-                        fillColor: '#05aaac',
+
+            {var circle = L.circleMarker( [markers[i].lat, markers[i].lng], {color: selectColor(markers[i].Cases,cases),
+                        fillColor: selectColor(markers[i].Cases,cases),
                         fillOpacity: 0.5,
-                        radius: markers[i].Cases*15} )
+                        radius: MinMax(markers[i].Cases,max,min)} )
                 .bindPopup( "<strong> Country:</strong>"+markers[i].Country+"<br>"+"<strong>Deaths:</strong>"+
                 markers[i].Deaths+"<br>"+"<strong>Cases:</strong>"+markers[i].Cases)
-                .addTo( map );}
+                .addTo( map );
+            var myZoom = {start:  map.getZoom(),end: map.getZoom()};
+            map.on('zoomstart', function(e) {myZoom.start = map.getZoom();});
+            map.on('zoomend', function(e) {
+                myZoom.end = map.getZoom();
+                var diff = myZoom.start - myZoom.end;
+                if (diff > 0) {
+                    circle.setRadius(circle.getRadius() * 5);
+                } else if (diff < 0) {
+                    circle.setRadius(circle.getRadius() / 2);
+                }
+            });
+            }
     });
 }();
 
@@ -253,7 +285,7 @@ function compareDeaths() {
         endpointCasesDay2 = '/casesPerSpecificCountry/' + country2;
         endpointDeathsDay2 = '/deathsPerSpecificCountry/' + country2;
     }
-        
+
     const host = 'http://127.0.0.1:5000';
     $.when(
         $.ajax({type: 'GET', url: host + endpointCasesDay1, dataType: 'json'}),
