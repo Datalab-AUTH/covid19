@@ -201,24 +201,14 @@ var Script = function() {
 
         for ( var i=0; i < markers.length; ++i )
 
-            {var circle = L.circleMarker( [markers[i].lat, markers[i].lng], {color: selectColor(markers[i].Cases,cases),
+            {L.circleMarker( [markers[i].lat, markers[i].lng], {color: selectColor(markers[i].Cases,cases),
                         fillColor: selectColor(markers[i].Cases,cases),
                         fillOpacity: 0.5,
-                        radius: MinMax(markers[i].Cases,max,min)} )
+                        radius: Math.max(5, MinMax(markers[i].Cases,max,min))} )
                 .bindPopup( "<strong> Country:</strong>"+markers[i].Country+"<br>"+"<strong>Deaths:</strong>"+
                 markers[i].Deaths+"<br>"+"<strong>Cases:</strong>"+markers[i].Cases)
                 .addTo( map );
-            var myZoom = {start:  map.getZoom(),end: map.getZoom()};
-            map.on('zoomstart', function(e) {myZoom.start = map.getZoom();});
-            map.on('zoomend', function(e) {
-                myZoom.end = map.getZoom();
-                var diff = myZoom.start - myZoom.end;
-                if (diff > 0) {
-                    circle.setRadius(circle.getRadius() * 5);
-                } else if (diff < 0) {
-                    circle.setRadius(circle.getRadius() / 2);
-                }
-            });
+
             }
     });
 }();
