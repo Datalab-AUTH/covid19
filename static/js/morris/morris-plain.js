@@ -199,14 +199,24 @@ var Script = function() {
             }
         }
 
+
+        var currentdate = new Date();
+    var datetime = currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/"
+                + currentdate.getFullYear() + " @ "
+                + currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
+                + currentdate.getSeconds();
+
         for ( var i=0; i < markers.length; ++i )
 
             {L.circleMarker( [markers[i].lat, markers[i].lng], {color: selectColor(markers[i].Cases,cases),
                         fillColor: selectColor(markers[i].Cases,cases),
                         fillOpacity: 0.5,
                         radius: Math.max(5, MinMax(markers[i].Cases,max,min))} )
-                .bindPopup( "<strong> Country:</strong>"+markers[i].Country+"<br>"+"<strong>Deaths:</strong>"+
-                markers[i].Deaths+"<br>"+"<strong>Cases:</strong>"+markers[i].Cases)
+                .bindPopup(markers[i].Country+"<br>"+"<span>Confirmed Cases:</span>"+
+                markers[i].Cases.toString().bold()+"<br>"+"<span>Deceased:</span>"+markers[i].Deaths.toString().bold() +
+                "<br>"+"<span>Updated:</span>" + datetime)
                 .addTo( map );
 
             }
